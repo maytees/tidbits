@@ -12,7 +12,7 @@ export default function Index() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="items-center h-screen pt-16">
+      <View className="items-center h-screen pt-20">
         <View className="relative flex flex-row items-center w-11/12">
           <Search
             size={20}
