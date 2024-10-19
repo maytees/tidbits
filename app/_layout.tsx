@@ -1,3 +1,4 @@
+import { PortalHost } from "@rn-primitives/portal";
 import "~/global.css";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -69,19 +70,7 @@ export default function RootLayout() {
       >
         <Stack.Screen name="index" />
       </Stack>
+      <PortalHost />
     </ThemeProvider>
   );
 }
-// import { Stack } from "expo-router";
-
-// export default function RootLayout() {
-//   return (
-//     <Stack
-//       screenOptions={{
-//         headerShown: false,
-//       }}
-//     >
-//       <Stack.Screen name="index" />
-//     </Stack>
-//   );
-// }
