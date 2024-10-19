@@ -1,13 +1,33 @@
-import { Text, View } from "react-native";
-import { MoonStar } from "~/lib/icons/MoonStar";
-import { Sun } from "~/lib/icons/Sun";
+import { useState } from "react";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { Input } from "~/components/ui/input";
+import { Search } from "~/lib/icons/Search";
 
 export default function Index() {
+  const [search, setSearch] = useState<string>("");
+
+  const onChangeSearch = (text: string) => {
+    setSearch(text);
+  };
+
   return (
-    <View>
-      <Text>Edit tes skibidiapp/index.tsx to edit this screen.</Text>
-      <MoonStar />
-      <Sun />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View className="items-center h-screen pt-16">
+        <View className="relative flex flex-row items-center w-11/12">
+          <Search
+            size={20}
+            className="absolute z-10 text-muted-foreground left-5"
+          />
+          <Input
+            className="w-full rounded-full pl-14"
+            placeholder="Search"
+            value={search}
+            onChangeText={onChangeSearch}
+            aria-labelledby="inputLabel"
+            aria-errormessage="inputError"
+          />
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
