@@ -28,7 +28,7 @@ export default function TabBottomBar() {
   return (
     <View
       style={{ paddingBottom: insets.bottom }}
-      className="z-10 bg-white dark:bg-background"
+      className="z-10 pt-2 bg-white border-t border-accent dark:bg-background"
     >
       <NavigationMenu
         value={value}
