@@ -23,15 +23,17 @@ export default function TabBottomBar() {
 
     router.push(path as Href<string>);
     setValue(path);
-
   };
 
   return (
     <View
       style={{ paddingBottom: insets.bottom }}
-      className="bg-white dark:bg-background"
+      className="z-10 bg-white dark:bg-background"
     >
-      <NavigationMenu value={value} onValueChange={(newValue) => setValue(newValue as string)}>
+      <NavigationMenu
+        value={value}
+        onValueChange={(newValue) => setValue(newValue as string)}
+      >
         <NavigationMenuList className="flex items-center justify-around px-4 py-2">
           <NavigationMenuItem value="/">
             <NavigationMenuLink asChild>
@@ -108,12 +110,14 @@ const BottomBarItem = React.forwardRef<
       {...props}
     >
       <Icon
-        className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"
-          }`}
+        className={`w-5 h-5 ${
+          isActive ? "text-foreground" : "text-muted-foreground"
+        }`}
       />
       <Text
-        className={`mt-1 text-xs ${isActive ? "text-foreground" : "text-muted-foreground"
-          }`}
+        className={`mt-1 text-xs ${
+          isActive ? "text-foreground" : "text-muted-foreground"
+        }`}
       >
         {label}
       </Text>
