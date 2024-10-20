@@ -2,7 +2,7 @@ import React from "react";
 import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
 import SearchBar from "~/components/SearchBar";
 
-export default function Index() {
+export default function Search() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View className="items-center h-screen pt-20">
