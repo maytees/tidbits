@@ -1,6 +1,6 @@
 import { Href, usePathname, useRouter } from "expo-router";
 import * as React from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   NavigationMenu,
@@ -37,46 +37,54 @@ export default function TabBottomBar() {
         <NavigationMenuList className="flex items-center justify-between px-6 py-2">
           <NavigationMenuItem value="/">
             <NavigationMenuLink asChild>
-              <BottomBarItem
-                icon={Home}
-                label="Home"
-                value="/"
-                currentPath={pathname}
-                onPress={() => handleNavigation("/")}
-              />
+              <TouchableOpacity onPress={() => handleNavigation("/")}>
+                <BottomBarItem
+                  icon={Home}
+                  label="Home"
+                  value="/"
+                  currentPath={pathname}
+                  onPress={() => handleNavigation("/")}
+                />
+              </TouchableOpacity>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem value="search">
             <NavigationMenuLink asChild>
-              <BottomBarItem
-                icon={Search}
-                label="Search"
-                value="/search"
-                currentPath={pathname}
-                onPress={() => handleNavigation("/search")}
-              />
+              <TouchableOpacity onPress={() => handleNavigation("/search")}>
+                <BottomBarItem
+                  icon={Search}
+                  label="Search"
+                  value="/search"
+                  currentPath={pathname}
+                  onPress={() => handleNavigation("/search")}
+                />
+              </TouchableOpacity>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem value="create">
             <NavigationMenuLink asChild>
-              <BottomBarItem
-                icon={PlusCircle}
-                label="Create"
-                value="/create"
-                currentPath={pathname}
-                onPress={() => handleNavigation("/create")}
-              />
+              <TouchableOpacity onPress={() => handleNavigation("/create")}>
+                <BottomBarItem
+                  icon={PlusCircle}
+                  label="Create"
+                  value="/create"
+                  currentPath={pathname}
+                  onPress={() => handleNavigation("/create")}
+                />
+              </TouchableOpacity>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem value="profile">
             <NavigationMenuLink asChild>
-              <BottomBarItem
-                icon={User}
-                label="Profile"
-                value="/profile"
-                currentPath={pathname}
-                onPress={() => handleNavigation("/profile")}
-              />
+              <TouchableOpacity onPress={() => handleNavigation("/profile")}>
+                <BottomBarItem
+                  icon={User}
+                  label="Profile"
+                  value="/profile"
+                  currentPath={pathname}
+                  onPress={() => handleNavigation("/profile")}
+                />
+              </TouchableOpacity>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
@@ -110,14 +118,12 @@ const BottomBarItem = React.forwardRef<
       {...props}
     >
       <Icon
-        className={`w-5 h-5 ${
-          isActive ? "text-foreground" : "text-muted-foreground"
-        }`}
+        className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"
+          }`}
       />
       <Text
-        className={`mt-1 text-xs ${
-          isActive ? "text-foreground" : "text-muted-foreground"
-        }`}
+        className={`mt-1 text-xs ${isActive ? "text-foreground" : "text-muted-foreground"
+          }`}
       >
         {label}
       </Text>
