@@ -1,9 +1,13 @@
+import * as Device from "expo-device";
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import SearchBar from "~/components/SearchBar";
 import Tidbit from "~/components/Tidbit";
 
 export default function Index() {
+  const { height } = useWindowDimensions();
+  console.log(height, Device.modelName);
+
   const story = `
 Quite simply a terrifying story...\
 In recent years, AI has emerged as a \
@@ -17,13 +21,16 @@ future. Join us as we uncover the fascinating world of artificial \
   `;
 
   return (
-    // <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View className="items-center h-screen pt-20">
+    <View
+      className="items-center h-screen"
+      style={{
+        paddingTop: height <= 667 ? 40 : 80,
+      }}
+    >
       <View className="relative flex flex-row items-center w-11/12">
         <SearchBar />
       </View>
       <Tidbit title={"Rise of Artificial Inteligence."} content={story} />
     </View>
-    // </TouchableWithoutFeedback>
   );
 }
