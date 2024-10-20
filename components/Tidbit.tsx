@@ -26,7 +26,7 @@ const Tidbit = ({
   };
 
   return (
-    <View className="flex-col justify-center flex-1 p-4 bg-background">
+    <View className="flex-col justify-center flex-1 px-6 bg-background">
       <View
         className="flex-row items-center justify-between"
         style={{ marginBottom: height * 0.05 }}
@@ -60,18 +60,27 @@ const Tidbit = ({
         </View>
       </View>
 
-      <Card className="pt-8 mb-5 bg-background" style={{ maxHeight: height * 0.5 }}>
+      <Card
+        className="pt-8 mb-5 bg-background"
+        style={{ maxHeight: height * 0.5 }}
+      >
         <ScrollView>
           <CardHeader className="py-0">
             <CardTitle
-              style={{ fontSize: getFontSize(28), lineHeight: getLineHeight(28) }}
+              style={{
+                fontSize: getFontSize(28),
+                lineHeight: getLineHeight(28),
+              }}
             >
               {title}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <Text
-              style={{ fontSize: getFontSize(18), lineHeight: getLineHeight(18) }}
+              style={{
+                fontSize: getFontSize(18),
+                lineHeight: getLineHeight(18),
+              }}
             >
               {content}
             </Text>

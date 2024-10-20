@@ -34,7 +34,7 @@ export default function TabBottomBar() {
         value={value}
         onValueChange={(newValue) => setValue(newValue as string)}
       >
-        <NavigationMenuList className="flex items-center justify-around px-4 py-2">
+        <NavigationMenuList className="flex items-center justify-between px-6 py-2">
           <NavigationMenuItem value="/">
             <NavigationMenuLink asChild>
               <BottomBarItem
