@@ -118,12 +118,14 @@ const BottomBarItem = React.forwardRef<
       {...props}
     >
       <Icon
-        className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"
-          }`}
+        className={`w-5 h-5 ${
+          isActive ? "text-foreground" : "text-muted-foreground"
+        }`}
       />
       <Text
-        className={`mt-1 text-xs ${isActive ? "text-foreground" : "text-muted-foreground"
-          }`}
+        className={`mt-1 text-xs ${
+          isActive ? "text-foreground" : "text-muted-foreground"
+        }`}
       >
         {label}
       </Text>
