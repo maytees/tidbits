@@ -11,15 +11,18 @@ import {
 import {
   Gesture,
   GestureDetector,
-  GestureHandlerRootView,
+  GestureHandlerRootView
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { LinearGradient, Path, Stop } from "react-native-svg";
 import { Heart, MessageCircle, Share } from "~/lib/icons";
 import { abbreviateNumber } from "~/lib/utils";
 import ContentSlider from "./ContentSlider";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Text } from "./ui/text";
+
+const TAB_BAR_HEIGHT = 60; // Adjust this value based on your TabBottomBar height
 
 const Tidbit = ({
   title = "Interesting Fact",
@@ -28,8 +31,9 @@ const Tidbit = ({
   username = "ai_insights",
   avatarUrl = "https://avatars.githubusercontent.com/u/88842870?v=4",
 }) => {
+  const { height, width } = useWindowDimensions();
   const fontScale = PixelRatio.getFontScale();
-  const getFontSize = (size: number) => size / fontScale;
+  const getFontSize = (size: number) => (size / fontScale) * (height < 700 ? 0.8 : 1);
   const getLineHeight = (fontSize: number) => {
     if (fontSize <= 16) return fontSize * 1.5;
     if (fontSize <= 20) return fontSize * 1.4;
@@ -45,6 +49,7 @@ const Tidbit = ({
   const heartScale = useRef(new Animated.Value(0)).current;
   const heartRotation = useRef(new Animated.Value(0)).current;
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   const toggleLike = useCallback(() => {
     setLiked((prev) => !prev);
@@ -69,7 +74,7 @@ const Tidbit = ({
       if (!liked) {
         toggleLike();
       }
-      setHeartPosition({ x, y: y - 390 });
+      setHeartPosition({ x, y });
       heartOpacity.setValue(0);
       heartScale.setValue(0);
       heartRotation.setValue(0);
@@ -137,33 +142,25 @@ const Tidbit = ({
   );
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ height: height - TAB_BAR_HEIGHT - insets.bottom, paddingBottom: insets.bottom + 50 }}>
       <GestureDetector gesture={gestures}>
-        <View className="flex-col justify-between px-5 bg-background">
-          <View className="max-h-full ">
+        <View style={{ flex: 1 }} className="flex-col justify-between px-5">
+          <View className="flex-1">
             <Text
               className="font-bold"
               style={{
                 fontSize: getFontSize(28),
-                lineHeight: getLineHeight(28),
+                lineHeight: getLineHeight(getFontSize(28)),
               }}
             >
               {title}
             </Text>
             <ContentSlider text={content} />
-            {/* <Text
-              style={{
-                fontSize: getFontSize(18),
-                lineHeight: getLineHeight(18),
-              }}
-            >
-              {content}
-            </Text> */}
           </View>
 
-          <View className="flex flex-row items-center justify-between">
-            <View className="flex-row items-center gap-5">
-              <Avatar className="w-16 h-16" alt={name}>
+          <View className="flex flex-row items-center mt-10 justify-between">
+            <View className="flex-row items-center gap-2">
+              <Avatar className="w-12 h-12" alt={name}>
                 <AvatarImage
                   source={{
                     uri: avatarUrl,
@@ -179,8 +176,8 @@ const Tidbit = ({
               <View className="items-start">
                 <Text
                   style={{
-                    fontSize: getFontSize(16),
-                    lineHeight: getLineHeight(16),
+                    fontSize: getFontSize(14),
+                    lineHeight: getLineHeight(getFontSize(14)),
                     fontWeight: "bold",
                   }}
                 >
@@ -188,8 +185,8 @@ const Tidbit = ({
                 </Text>
                 <Text
                   style={{
-                    fontSize: getFontSize(14),
-                    lineHeight: getLineHeight(14),
+                    fontSize: getFontSize(12),
+                    lineHeight: getLineHeight(getFontSize(12)),
                   }}
                   className="text-muted-foreground"
                 >
@@ -197,7 +194,7 @@ const Tidbit = ({
                 </Text>
               </View>
             </View>
-            <View className="flex-row items-center justify-center mb-10 mr-2">
+            <View className="flex-row items-center justify-center mr-2 gap-5">
               <ActionButton
                 icon={
                   <Animated.View style={{ transform: [{ scale: likeScale }] }}>
@@ -219,7 +216,7 @@ const Tidbit = ({
               <ActionButton
                 icon={
                   <MessageCircle
-                    size={getFontSize(28)}
+                    size={getFontSize(22)}
                     className="text-foreground"
                   />
                 }
@@ -227,37 +224,37 @@ const Tidbit = ({
               />
               <ActionButton
                 icon={
-                  <Share size={getFontSize(28)} className="text-foreground" />
+                  <Share size={getFontSize(22)} className="text-foreground" />
                 }
                 count={856}
               />
             </View>
-            <Animated.View
-              style={{
-                position: "absolute",
-                left: heartPosition.x - 25,
-                top: heartPosition.y - 25,
-                opacity: heartOpacity,
-                transform: [
-                  { scale: heartScale },
-                  {
-                    translateY: heartScale.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, -80],
-                    }),
-                  },
-                  {
-                    rotate: heartRotation.interpolate({
-                      inputRange: [-20, 20],
-                      outputRange: ["-20deg", "20deg"],
-                    }),
-                  },
-                ],
-              }}
-            >
-              <GradientHeart />
-            </Animated.View>
           </View>
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: heartPosition.x - 25,
+              top: heartPosition.y - 25,
+              opacity: heartOpacity,
+              transform: [
+                { scale: heartScale },
+                {
+                  translateY: heartScale.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, -80],
+                  }),
+                },
+                {
+                  rotate: heartRotation.interpolate({
+                    inputRange: [-20, 20],
+                    outputRange: ["-20deg", "20deg"],
+                  }),
+                },
+              ],
+            }}
+          >
+            <GradientHeart />
+          </Animated.View>
         </View>
       </GestureDetector>
     </GestureHandlerRootView>
@@ -273,8 +270,9 @@ const ActionButton = ({
   count: number;
   onPress?: () => void;
 }) => {
+  const { height } = useWindowDimensions();
   const fontScale = PixelRatio.getFontScale();
-  const getFontSize = (size: number) => size / fontScale;
+  const getFontSize = (size: number) => (size / fontScale) * (height < 700 ? 0.8 : 1);
   const getLineHeight = (fontSize: number) => {
     if (fontSize <= 16) return fontSize * 1.5;
     if (fontSize <= 20) return fontSize * 1.4;
@@ -284,7 +282,7 @@ const ActionButton = ({
 
   return (
     <TouchableOpacity
-      className="flex-col items-center gap-2 p-2"
+      className="flex-col items-center gap-1 p-2"
       onPress={onPress}
     >
       {icon}
@@ -292,7 +290,7 @@ const ActionButton = ({
         className="text-foreground"
         style={{
           fontSize: getFontSize(12),
-          lineHeight: getLineHeight(12),
+          lineHeight: getLineHeight(getFontSize(12)),
         }}
       >
         {abbreviateNumber(count)}
@@ -315,6 +313,7 @@ const Tidbits = ({
   const [refreshing, setRefreshing] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
   const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -336,7 +335,7 @@ const Tidbits = ({
     };
   }) => {
     return (
-      <View style={{ width, height }}>
+      <View style={{ width, height: height - TAB_BAR_HEIGHT - insets.bottom }}>
         <Tidbit
           title={item.title}
           content={item.content}
@@ -371,7 +370,7 @@ const Tidbits = ({
       keyExtractor={(_, index) => index.toString()}
       pagingEnabled
       showsVerticalScrollIndicator={false}
-      snapToInterval={height}
+      snapToInterval={height - TAB_BAR_HEIGHT - insets.bottom}
       disableIntervalMomentum
       snapToAlignment="start"
       decelerationRate={"fast"}
@@ -387,8 +386,8 @@ const Tidbits = ({
       scrollEventThrottle={16}
       onMomentumScrollEnd={(event) => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        const index = Math.round(offsetY / height);
-        scrollY.setValue(index * height);
+        const index = Math.round(offsetY / (height - TAB_BAR_HEIGHT - insets.bottom));
+        scrollY.setValue(index * (height - TAB_BAR_HEIGHT - insets.bottom));
       }}
     />
   );

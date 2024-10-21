@@ -9,7 +9,7 @@ interface ContentSliderProps {
 const ContentSlider: React.FC<ContentSliderProps> = ({ text }) => {
     const [textSlides, setTextSlides] = useState<string[]>([]);
     const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width);
-    const [containerHeight, setContainerHeight] = useState(400);
+    const [containerHeight, setContainerHeight] = useState(700);
     const [currentPage, setCurrentPage] = useState(0);
     const flatListRef = useRef<FlatList>(null);
 
@@ -48,7 +48,7 @@ const ContentSlider: React.FC<ContentSliderProps> = ({ text }) => {
     };
 
     const renderItem = ({ item }: { item: string }) => (
-        <View style={{ width: containerWidth, height: containerHeight, padding: 10 }}>
+        <View style={{ width: containerWidth }} className='pt-8  h-[65vh]'>
             <Text style={{ fontSize }}>{item}</Text>
         </View>
     );
@@ -66,7 +66,8 @@ const ContentSlider: React.FC<ContentSliderProps> = ({ text }) => {
                 setContainerWidth(width);
                 setContainerHeight(height);
             }}
-            style={{ height: 350 }}
+            // style={{ height: 400 }}
+            className=''
         >
             <FlatList
                 ref={flatListRef}
