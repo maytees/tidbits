@@ -3,7 +3,6 @@ import {
   Animated,
   PixelRatio,
   RefreshControl,
-  ScrollView,
   TouchableOpacity,
   View,
   useColorScheme,
@@ -15,9 +14,11 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
+import Svg, { LinearGradient, Path, Stop } from "react-native-svg";
 import { Heart, MessageCircle, Share } from "~/lib/icons";
+import { abbreviateNumber } from "~/lib/utils";
+import ContentSlider from "./ContentSlider";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Text } from "./ui/text";
 
 const Tidbit = ({
@@ -37,7 +38,7 @@ const Tidbit = ({
   };
 
   const [liked, setLiked] = useState(false);
-  const likeCount = useRef(new Animated.Value(1200)).current;
+  const [likeCount, setLikeCount] = useState(1249);
   const likeScale = useRef(new Animated.Value(1)).current;
   const [heartPosition, setHeartPosition] = useState({ x: 0, y: 0 });
   const heartOpacity = useRef(new Animated.Value(0)).current;
@@ -60,53 +61,52 @@ const Tidbit = ({
       }).start();
     });
 
-    Animated.timing(likeCount, {
-      toValue: liked ? 1200 : 1201,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [liked, likeScale, likeCount]);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+  }, [liked, likeScale]);
 
-  const handleDoubleTap = useCallback((x: number, y: number) => {
-    if (!liked) {
-      toggleLike();
-    }
-    setHeartPosition({ x, y });
-    heartOpacity.setValue(0);
-    heartScale.setValue(0);
-    heartRotation.setValue(0);
+  const handleDoubleTap = useCallback(
+    (x: number, y: number) => {
+      if (!liked) {
+        toggleLike();
+      }
+      setHeartPosition({ x, y: y - 390 });
+      heartOpacity.setValue(0);
+      heartScale.setValue(0);
+      heartRotation.setValue(0);
 
-    const randomRotation = Math.random() * 40 - 20; // Random rotation between -20 and 20 degrees
-    const randomDuration = 800 + Math.random() * 400; // Random duration between 800ms and 1200ms
+      const randomRotation = Math.random() * 40 - 20; // Random rotation between -20 and 20 degrees
+      const randomDuration = 800 + Math.random() * 400; // Random duration between 800ms and 1200ms
 
-    Animated.parallel([
-      Animated.spring(heartScale, {
-        toValue: 1,
-        friction: 5,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-      Animated.spring(heartRotation, {
-        toValue: randomRotation,
-        friction: 3,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-      Animated.sequence([
-        Animated.spring(heartOpacity, {
+      Animated.parallel([
+        Animated.spring(heartScale, {
           toValue: 1,
-          friction: 10,
+          friction: 5,
           tension: 40,
           useNativeDriver: true,
         }),
-        Animated.timing(heartOpacity, {
-          toValue: 0,
-          duration: randomDuration,
+        Animated.spring(heartRotation, {
+          toValue: randomRotation,
+          friction: 3,
+          tension: 40,
           useNativeDriver: true,
         }),
-      ]),
-    ]).start();
-  }, [liked, toggleLike, heartOpacity, heartScale, heartRotation]);
+        Animated.sequence([
+          Animated.spring(heartOpacity, {
+            toValue: 1,
+            friction: 10,
+            tension: 40,
+            useNativeDriver: true,
+          }),
+          Animated.timing(heartOpacity, {
+            toValue: 0,
+            duration: randomDuration,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
+    },
+    [liked, toggleLike, heartOpacity, heartScale, heartRotation]
+  );
 
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
@@ -120,114 +120,144 @@ const Tidbit = ({
 
   const gestures = Gesture.Exclusive(doubleTapGesture, singleTapGesture);
 
+  const GradientHeart = () => (
+    <Svg width="50" height="50" viewBox="0 0 24 24" fill="none">
+      <LinearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+        <Stop offset="0" stopColor="#FF6B6B" stopOpacity="1" />
+        <Stop offset="1" stopColor="#FFA07A" stopOpacity="1" />
+      </LinearGradient>
+      <Path
+        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+        stroke="url(#grad)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <GestureDetector gesture={gestures}>
-        <View className="flex-col justify-center h-[80vh] gap-8 px-6 bg-background">
-          <View className="flex-row items-center justify-between">
-            <Avatar className="w-12 h-12" alt={name}>
-              <AvatarImage
-                source={{
-                  uri: avatarUrl,
-                }}
-              />
-              <AvatarFallback>
-                <Text>{name.charAt(0)}</Text>
-              </AvatarFallback>
-            </Avatar>
-            <View className="items-end">
-              <Text
-                style={{
-                  fontSize: getFontSize(14),
-                  lineHeight: getLineHeight(14),
-                  fontWeight: "bold",
-                }}
-              >
-                {name}
-              </Text>
-              <Text
-                style={{ fontSize: getFontSize(12), lineHeight: getLineHeight(12) }}
-                className="text-muted-foreground"
-              >
-                @{username} • 2h ago
-              </Text>
-            </View>
+        <View className="flex-col justify-between px-5 bg-background">
+          <View className="max-h-full ">
+            <Text
+              className="font-bold"
+              style={{
+                fontSize: getFontSize(28),
+                lineHeight: getLineHeight(28),
+              }}
+            >
+              {title}
+            </Text>
+            <ContentSlider text={content} />
+            {/* <Text
+              style={{
+                fontSize: getFontSize(18),
+                lineHeight: getLineHeight(18),
+              }}
+            >
+              {content}
+            </Text> */}
           </View>
 
-          <Card className="bg-background max-h-[50%]">
-            <ScrollView>
-              <CardHeader>
-                <CardTitle
-                  style={{
-                    fontSize: getFontSize(28),
-                    lineHeight: getLineHeight(28),
+          <View className="flex flex-row items-center justify-between">
+            <View className="flex-row items-center gap-5">
+              <Avatar className="w-16 h-16" alt={name}>
+                <AvatarImage
+                  source={{
+                    uri: avatarUrl,
                   }}
-                >
-                  {title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                />
+                <AvatarFallback>
+                  <Text>
+                    {name.charAt(0).toUpperCase() +
+                      name.charAt(2).toUpperCase()}
+                  </Text>
+                </AvatarFallback>
+              </Avatar>
+              <View className="items-start">
                 <Text
                   style={{
-                    fontSize: getFontSize(18),
-                    lineHeight: getLineHeight(18),
+                    fontSize: getFontSize(16),
+                    lineHeight: getLineHeight(16),
+                    fontWeight: "bold",
                   }}
                 >
-                  {content}
+                  {name}
                 </Text>
-              </CardContent>
-            </ScrollView>
-          </Card>
-
-          <View className="flex-row justify-between mb-10">
-            <ActionButton
-              icon={
-                <Animated.View style={{ transform: [{ scale: likeScale }] }}>
-                  <Heart
-                    size={getFontSize(24)}
-                    className={liked ? "text-red-500" : colorScheme === 'dark' ? "text-gray-300" : "text-gray-700"}
-                  />
-                </Animated.View>
-              }
-              count={likeCount}
-              onPress={toggleLike}
-            />
-            <ActionButton
-              icon={
-                <MessageCircle size={getFontSize(24)} className="text-foreground" />
-              }
-              count={234}
-            />
-            <ActionButton
-              icon={<Share size={getFontSize(24)} className="text-foreground" />}
-              count={856}
-            />
-          </View>
-          <Animated.View
-            style={{
-              position: 'absolute',
-              left: heartPosition.x - 25,
-              top: heartPosition.y - 25,
-              opacity: heartOpacity,
-              transform: [
-                { scale: heartScale },
-                {
-                  translateY: heartScale.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -50]
-                  })
-                },
-                {
-                  rotate: heartRotation.interpolate({
-                    inputRange: [-20, 20],
-                    outputRange: ['-20deg', '20deg']
-                  })
+                <Text
+                  style={{
+                    fontSize: getFontSize(14),
+                    lineHeight: getLineHeight(14),
+                  }}
+                  className="text-muted-foreground"
+                >
+                  @{username} • 2h ago
+                </Text>
+              </View>
+            </View>
+            <View className="flex-row items-center justify-center mb-10 mr-2">
+              <ActionButton
+                icon={
+                  <Animated.View style={{ transform: [{ scale: likeScale }] }}>
+                    <Heart
+                      size={getFontSize(22)}
+                      className={
+                        liked
+                          ? "text-red-500"
+                          : colorScheme === "dark"
+                            ? "text-gray-300"
+                            : "text-gray-700"
+                      }
+                    />
+                  </Animated.View>
                 }
-              ],
-            }}
-          >
-            <Heart size={50} fill="#ff6b6b" stroke="none" />
-          </Animated.View>
+                count={likeCount}
+                onPress={toggleLike}
+              />
+              <ActionButton
+                icon={
+                  <MessageCircle
+                    size={getFontSize(28)}
+                    className="text-foreground"
+                  />
+                }
+                count={234}
+              />
+              <ActionButton
+                icon={
+                  <Share size={getFontSize(28)} className="text-foreground" />
+                }
+                count={856}
+              />
+            </View>
+            <Animated.View
+              style={{
+                position: "absolute",
+                left: heartPosition.x - 25,
+                top: heartPosition.y - 25,
+                opacity: heartOpacity,
+                transform: [
+                  { scale: heartScale },
+                  {
+                    translateY: heartScale.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, -80],
+                    }),
+                  },
+                  {
+                    rotate: heartRotation.interpolate({
+                      inputRange: [-20, 20],
+                      outputRange: ["-20deg", "20deg"],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <GradientHeart />
+            </Animated.View>
+          </View>
         </View>
       </GestureDetector>
     </GestureHandlerRootView>
@@ -240,7 +270,7 @@ const ActionButton = ({
   onPress,
 }: {
   icon: React.ReactNode;
-  count: number | Animated.Value;
+  count: number;
   onPress?: () => void;
 }) => {
   const fontScale = PixelRatio.getFontScale();
@@ -253,17 +283,20 @@ const ActionButton = ({
   };
 
   return (
-    <TouchableOpacity className="flex-row items-center gap-2 p-2" onPress={onPress}>
+    <TouchableOpacity
+      className="flex-col items-center gap-2 p-2"
+      onPress={onPress}
+    >
       {icon}
-      <Animated.Text
+      <Text
         className="text-foreground"
         style={{
-          fontSize: getFontSize(14),
-          lineHeight: getLineHeight(14),
+          fontSize: getFontSize(12),
+          lineHeight: getLineHeight(12),
         }}
       >
-        {count}
-      </Animated.Text>
+        {abbreviateNumber(count)}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -339,8 +372,9 @@ const Tidbits = ({
       pagingEnabled
       showsVerticalScrollIndicator={false}
       snapToInterval={height}
+      disableIntervalMomentum
       snapToAlignment="start"
-      decelerationRate="fast"
+      decelerationRate={"fast"}
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
         { useNativeDriver: true }
