@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
 } from "~/components/ui/navigation-menu";
 import { Text } from "~/components/ui/text";
-import { Home, PlusCircle, Search, User } from "~/lib/icons";
+import { Newspaper, PlusCircle, Search, User } from "~/lib/icons";
 import { cn } from "~/lib/utils";
 
 export default function TabBottomBar() {
@@ -39,8 +39,8 @@ export default function TabBottomBar() {
             <NavigationMenuLink asChild>
               <TouchableOpacity onPress={() => handleNavigation("/")}>
                 <BottomBarItem
-                  icon={Home}
-                  label="Home"
+                  icon={Newspaper}
+                  label="Feed"
                   value="/"
                   currentPath={pathname}
                   onPress={() => handleNavigation("/")}
@@ -118,14 +118,12 @@ const BottomBarItem = React.forwardRef<
       {...props}
     >
       <Icon
-        className={`w-5 h-5 ${
-          isActive ? "text-foreground" : "text-muted-foreground"
-        }`}
+        className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"
+          }`}
       />
       <Text
-        className={`mt-1 text-xs ${
-          isActive ? "text-foreground" : "text-muted-foreground"
-        }`}
+        className={`mt-1 text-xs ${isActive ? "text-foreground" : "text-muted-foreground"
+          }`}
       >
         {label}
       </Text>
