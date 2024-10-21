@@ -1,7 +1,6 @@
 import * as Device from "expo-device";
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
-import SearchBar from "~/components/SearchBar";
 import Tidbits from "~/components/Tidbit";
 
 export default function Index() {
@@ -49,9 +48,6 @@ Join us in exploring how renewable energy is paving the way for a greener \
         paddingTop: height <= 667 ? 40 : 80,
       }}
     >
-      <View className="relative flex flex-row items-center w-11/12">
-        <SearchBar />
-      </View>
       <Tidbits
         tidbits={[
           {
