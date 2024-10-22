@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList, LayoutChangeEvent, PixelRatio, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, LayoutChangeEvent, PixelRatio, StyleSheet, useColorScheme, View } from 'react-native';
 import { Text } from './ui/text';
 
 interface ContentSliderProps {
@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundColor: useColorScheme() === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
         marginHorizontal: 4,
     },
     paginationDotActive: {
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: useColorScheme() === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
     },
 });
 

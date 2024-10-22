@@ -7,7 +7,7 @@ export { MoonStar } from "./icons/MoonStar";
 export { Newspaper } from "./icons/Newspaper";
 export { PlusCircle } from "./icons/PlusCircle";
 export { Search } from "./icons/Search";
+export { Settings } from "./icons/Settings";
 export { Share } from "./icons/Share";
 export { Sun } from "./icons/Sun";
 export { User } from "./icons/User";
-
